@@ -1,6 +1,4 @@
-import { MongoClient } from 'mongodb';
 import { spawn } from 'child_process';
-import cron from 'node-cron';
 import archiver from 'archiver';
 import { createWriteStream, rmSync } from 'fs';
 import { uploadBackupToS3 } from './upload_s3.js';
@@ -33,7 +31,7 @@ async function backupDatabase() {
     const backupCommand = 'mongodump';
     const backupArgs = [`--uri=${uri}`, `--out=${backupDir}`];
     console.log(backupCommand, ...backupArgs);
-
+    console.log('Backup processing...');
     await spawnPromise(backupCommand, backupArgs);
     console.log('Backup completed successfully');
 
@@ -70,17 +68,19 @@ async function backupDatabase() {
   }
 }
 
-//backupDatabase();
-
-let client =null;
 async function run(){
   try {
-    //backupDatabase();
-    cron.schedule('0 */12 * * *', backupDatabase);
+    await backupDatabase();
+    console.log("Next 6 hours...")
   } catch (error) {
     console.log(error)
   }
   
 }
 
-run()
+// Run the backup every 6 hours (6 * 60 * 60 * 1000 milliseconds)
+const interval = 6 * 60 * 60 * 1000;
+// Initial run
+run();
+// Set up the interval to run the backup every 6 hours
+setInterval(run, interval);

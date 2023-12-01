@@ -26,7 +26,7 @@ async function uploadBackupToS3(zipFilePath, currentDate) {
     // Delete the ZIP file after upload to S3
     unlinkSync(zipFilePath);
 
-    console.log('Backup ZIP file uploaded to S3:', command);
+    console.log('Backup ZIP file uploaded to S3: Status ', send['$metadata'].httpStatusCode);
   } catch (err) {
     console.error('Error uploading ZIP file to S3:', err);
   }

@@ -1,8 +1,9 @@
 // connect.js
 import { MongoClient } from 'mongodb';
-const client = new MongoClient(uri);
+let client = null;
 export async function connectToMongoDB(uri) {
     try {
+         client = new MongoClient(uri);
         await client.connect();
         console.log('Connected to MongoDB');
         return client.db(); // Return the database instance

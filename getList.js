@@ -10,7 +10,7 @@ const getList = async () => {
     };
     const command = new ListObjectsV2Command(input);
     const response = await s3.send(command);
-    console.log("All list", response.Contents);
+    console.log("All list", response.Contents.length);
     response.Contents.forEach(async (item) => {
         if (checkIfMoreThan10DaysAgo(item.LastModified)) {
           deleteObjectFromS3(bucketName, item.Key); // Replace YOUR_BUCKET_NAME with your S3 bucket name
@@ -53,5 +53,3 @@ const checkIfMoreThan10DaysAgo = (lastModifiedDateString) => {
 
 
 export { getList};
-
-getList()
