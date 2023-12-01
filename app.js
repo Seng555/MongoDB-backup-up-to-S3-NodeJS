@@ -1,11 +1,12 @@
 import { spawn } from 'child_process';
 import archiver from 'archiver';
+import 'dotenv/config';
 import { createWriteStream, rmSync } from 'fs';
 import { uploadBackupToS3 } from './upload_s3.js';
 import { getList } from './getList.js';
 import {connectToMongoDB, Disconnected} from './cnn.js';
 
-const uri = 'mongodb://paymart_u:Wo0R0ZKnHyeVfTYrGVO8bCupV@paydb.paymartpayrich.com:27017,paydb.paymartpayrich.com:27018,paydb.paymartpayrich.com:27019/paymart?replicaSet=paymart&retryWrites=true&w=majority&authSource=admin'; // Replace with your MongoDB URI
+const uri = process.env.mongoDBURI; // Replace with your MongoDB URI
 const backupDir = 'dump'; // Replace with your desired backup directory
 
 // Create a custom wrapper for spawn with promises
@@ -30,7 +31,7 @@ async function backupDatabase() {
     console.log('backUp started', currentDate);
     const backupCommand = 'mongodump';
     const backupArgs = [`--uri=${uri}`, `--out=${backupDir}`];
-    console.log(backupCommand, ...backupArgs);
+    console.log("mongodump starting...");
     console.log('Backup processing...');
     await spawnPromise(backupCommand, backupArgs);
     console.log('Backup completed successfully');
